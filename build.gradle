@@ -16,6 +16,9 @@ allprojects {
     repositories {
         google()
         jcenter()
+        maven { url 'https://jitpack.io' }
+        maven { url 'https://github.com/link-u/AndroidGlideAvifDecoder/raw/master/repository' }
+
     }
 }
 

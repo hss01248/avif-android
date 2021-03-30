@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Gravity;
@@ -25,6 +26,7 @@ import android.widget.TextView;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -78,6 +80,10 @@ public class MainActivity extends AppCompatActivity {
         {
         }
         return 1;
+    }
+
+    public void toDemo2(View view) {
+        startActivity(new Intent(this,Demo2Activity.class));
     }
 
     private class AsyncCreateAVIF extends AsyncTask<String, String, Bitmap> {
@@ -143,6 +149,7 @@ public class MainActivity extends AppCompatActivity {
                 if(f.exists()) f.delete();
 
                 String sizecomp = "AVIF size " + t.length()/1024 + " KB";
+                Log.w("avif", f+"\n"+sizecomp);
 
 
                 if(t.exists()) text2.setText("AVIF file saved to:\n\n " +getExternalFilesDir(null).getAbsolutePath() + "/" + tofilename +"\n\n"+encodedIn + "\n" + sizecomp);
@@ -176,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
 
             try {
                 String filePath = uri.getPath();
-                Log.e("PATH", filePath);
+                Log.e("PATH", filePath);///document/image:104055
 
                 Bitmap bitmap_1 = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
                 ImageView image1 = findViewById(R.id.image1);
@@ -186,6 +193,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("BUF", getDataDir()+  "/" + rawFileP );
 
                 image1.setImageBitmap(bitmap_f);
+                compressToJpg(bitmap_f);
 
                 SimpleDateFormat formatter = new SimpleDateFormat("_dd_MM_yyyy_HH_mm_ss");
                 Date date = new Date();
@@ -232,10 +240,24 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void compressToJpg(final Bitmap bitmap_f) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                File file = new File(getExternalFilesDir(Environment.DIRECTORY_DCIM),System.currentTimeMillis()+".jpg");
+                try {
+                    bitmap_f.compress(Bitmap.CompressFormat.JPEG,70,new FileOutputStream(file));
+                    Log.w("jpg","result:"+file.getAbsolutePath()+"\n"+file.length()/1024+"kB");
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
 
 
     private String execCmd(String cmd, String[] envp) throws java.io.IOException {
-        Log.e("EXECUTING", cmd);
+        Log.e("EXECUTING", cmd.replace(".avif ",".avif\n"));
 
         Process proc = null;
         proc = Runtime.getRuntime().exec(cmd, envp);
@@ -257,8 +279,11 @@ public class MainActivity extends AppCompatActivity {
         String ev = getApplicationInfo().nativeLibraryDir;
         String[] envp = {"LD_LIBRARY_PATH=" + ev};
 
-        String name = getApplicationInfo().nativeLibraryDir + "/libavif_example1.so " + getDataDir()+ "/" + rawFileP + " " + getDataDir() + "/b.avif" + " " + width + " " + height +" " + threads + " " + qua1 +  " " + qua2 +  " " + speed;
-
+        String name = getApplicationInfo().nativeLibraryDir + "/libavif_example1.so "
+                + getDataDir()+ "/" + rawFileP + " " + getDataDir() + "/b.avif"
+                + " " + width + " " + height +" " + threads + " " + qua1 +  " " + qua2 +  " " + speed;
+//EXECUTING: /data/app/com.jackco.avifencoder-pfiGIymaFugjRSeVPy2yOg==/lib/arm64/libavif_example1.so
+// /data/user/0/com.jackco.avifencoder/decoded.raw /data/user/0/com.jackco.avifencoder/b.avif 1080 2340 8 50 60 10
 
         String res = null;
         try {
@@ -323,7 +348,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onProgressChanged(SeekBar seekBar,int progress, boolean fromUser) {
-                qua1 = 63 - progress;
+                qua1 = 63-progress;
                 qua2 = qua1 + 10;
 
                 if(qua2 > 63) qua2 = 63;

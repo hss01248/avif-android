@@ -79,3 +79,15 @@ ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 
 ```
+
+```
+
+
+
+
+
+颜色丢失问题:
+
+左边avif,右边jpeg
+
+![image-20210330163218224](https://gitee.com/hss012489/picbed/raw/master/picgo/1617093138293-image-20210330163218224.jpg)
