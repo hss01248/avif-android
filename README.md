@@ -82,7 +82,9 @@ POSSIBILITY OF SUCH DAMAGE.
 
 ```
 
+exiftool -all= -tagsfromfile src.jpg -exif:all dst.jpg
 
+Erase all meta information from `dst.jpg` image, then copy EXIF tags from `src.jpg`.
 
 
 

@@ -18,6 +18,9 @@ import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+
+import it.sephiroth.android.library.exif2.ExifTag;
 
 public class AvifEncoder {
 
@@ -50,7 +53,19 @@ public class AvifEncoder {
 
     }
 
-    private static void copyExif(String input, String output) {
+    //使用exiftool
+    private static void copyExif(String input, String output) throws IOException {
+        it.sephiroth.android.library.exif2.ExifInterface exifInterface = new it.sephiroth.android.library.exif2.ExifInterface();
+        exifInterface.readExif(input, it.sephiroth.android.library.exif2.ExifInterface.Options.OPTION_ALL);
+        exifInterface.writeExif(output);
+
+        it.sephiroth.android.library.exif2.ExifInterface exifInterface2 = new it.sephiroth.android.library.exif2.ExifInterface();
+        exifInterface2.readExif(output, it.sephiroth.android.library.exif2.ExifInterface.Options.OPTION_ALL);
+        List<ExifTag> allTags = exifInterface2.getAllTags();
+        for (ExifTag allTag : allTags) {
+            Log.d("exif",allTag.toString());
+        }
+
 
     }
 
