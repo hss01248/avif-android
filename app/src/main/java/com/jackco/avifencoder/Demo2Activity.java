@@ -4,15 +4,20 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
+import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.jackco.avifencoder.databinding.ActivityDemo2Binding;
 import com.jackco.avifencoder.quality.Magick;
 
@@ -84,7 +89,7 @@ public class Demo2Activity extends AppCompatActivity {
                         .into(binding.ivOriginal);*/
                 File file = new File(path);
                 final int quality = new Magick().getJPEGImageQuality(file);
-                binding.ivOriginal.setImageURI(Uri.fromFile(file));
+                binding.ivOriginal.setImage(ImageSource.uri(Uri.fromFile(file)));
                 binding.tvOriginal.setText(file.length()/1024+"kB,quality:"+quality+"\n"+path);
                 new Thread(new Runnable() {
                     @Override
@@ -119,6 +124,9 @@ public class Demo2Activity extends AppCompatActivity {
     }
 
     private void compressAvif(final String path) {
+        if(TextUtils.isEmpty(path)){
+            return;
+        }
 
         runOnUiThread(new Runnable() {
             @Override
@@ -141,24 +149,42 @@ public class Demo2Activity extends AppCompatActivity {
                 final File avif = new File(getExternalFilesDir("avif"),name);
 
                 AvifEncoder.encodeFileTo(path,avif.getAbsolutePath(),q1,q2);
+
+
+
+
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         Toast.makeText(Demo2Activity.this,"avif压缩完成,耗时:"
                                 +(System.currentTimeMillis() - start)+"ms",Toast.LENGTH_LONG).show();
                         //showDesc(path,jpg,avif);
-                        Glide.with(Demo2Activity.this)
+                      /*  Glide.with(Demo2Activity.this)
                                 .load(avif)
                                 .override(w,h)
-                                .into(binding.ivAvif);
+                                .into(binding.ivAvif);*/
                         binding.tvAvif.setText(avif.length()/1024+"kB, q1="+q1+",q2:"+q2+" cost:"
                                 +(System.currentTimeMillis() - start)+"ms, wh:"+w+"x"+h+"\n"+avif.getAbsolutePath());
-
+                        showAvifBig(avif);
 
                     }
                 });
             }
         }).start();
+
+    }
+
+    private void showAvifBig(File avif) {
+        Glide.with(Demo2Activity.this)
+                .asBitmap()
+                .load(avif)
+                .override(w,h)
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                        binding.ivAvif.setImage(ImageSource.bitmap(resource));
+                    }
+                });
 
     }
 
@@ -201,7 +227,7 @@ public class Demo2Activity extends AppCompatActivity {
                             .load(file)
                             .override(w,h)
                             .into(binding.ivJpg75);*/
-                    binding.ivJpg75.setImageURI(Uri.fromFile(file));
+                    binding.ivJpg75.setImage(ImageSource.uri(Uri.fromFile(file)));
                     binding.tvLibjpeg.setText(file.length()/1024+"kB cost"+(System.currentTimeMillis()-start)+"ms,qulity:"+quality+"\n"+file.getAbsolutePath());
                 }
             });
