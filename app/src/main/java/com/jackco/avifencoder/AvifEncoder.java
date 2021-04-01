@@ -31,16 +31,16 @@ public class AvifEncoder {
     }
 
 
-    public static void  encodeFileTo(String input,String output,int quality){
+    public static void  encodeFileTo(String input,String output,int quality,int q2){
         try {
             Bitmap bitmap = decodeBitmap(input);
             String rawPath = writeRaw(bitmap);
-            int qua1 = 63-quality;
+           /* int qua1 = 63-quality;
             int  qua2 = qua1 + 10;
 
             if(qua2 > 63) qua2 = 63;
-            if(qua1 == 0) qua2 = 0;
-            boolean success =  execAvifEncoder(rawPath,output,bitmap.getWidth(),bitmap.getHeight(),8,qua1,qua2,10);
+            if(qua1 == 0) qua2 = 0;*/
+            boolean success =  execAvifEncoder(rawPath,output,bitmap.getWidth(),bitmap.getHeight(),8,quality,q2,10);
             if(success){
                 copyExif(input,output);
             }

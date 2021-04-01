@@ -15,11 +15,15 @@
         <SeekBar
             android:id="@+id/sb_q1"
             android:padding="10dp"
+            android:max="63"
+            android:progress="25"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
         <SeekBar
             android:id="@+id/sb_q2"
             android:padding="10dp"
+            android:progress="45"
+            android:max="63"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
         <TextView
@@ -30,6 +34,7 @@
         <TextView
             android:padding="5dp"
             android:text="avif"
+            android:id="@+id/tv_avif"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
         <com.github.chrisbanes.photoview.PhotoView
@@ -40,6 +45,7 @@
         <TextView
             android:padding="5dp"
             android:text="original"
+            android:id="@+id/tv_original"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
         <com.github.chrisbanes.photoview.PhotoView
@@ -50,6 +56,7 @@
         <TextView
             android:padding="5dp"
             android:text="jpg"
+            android:id="@+id/tv_libjpeg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
         <com.github.chrisbanes.photoview.PhotoView
