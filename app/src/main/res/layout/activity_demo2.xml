@@ -23,7 +23,7 @@
         <SeekBar
             android:id="@+id/sb_q2"
             android:padding="10dp"
-            android:progress="40"
+            android:progress="35"
             android:max="63"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
