@@ -1,9 +1,15 @@
 package com.jackco.avifencoder;
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -13,6 +19,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
@@ -28,7 +36,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
+import static com.darsh.multipleimageselect.helpers.Constants.REQUEST_CODE;
+
 public class Demo2Activity extends AppCompatActivity {
+    private static final int REQUEST_CODE_3 = 788;
     ActivityDemo2Binding binding;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -37,7 +48,46 @@ public class Demo2Activity extends AppCompatActivity {
          binding = ActivityDemo2Binding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         initEvent();
+        requestPermission();
+
     }
+
+
+    private void requestPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            // 先判断有没有权限
+            if (Environment.isExternalStorageManager()) {
+               // writeFile();
+            } else {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+                intent.setData(Uri.parse("package:" + getPackageName()));
+                startActivityForResult(intent, REQUEST_CODE_3);
+            }
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            // 先判断有没有权限
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
+                    ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+               // writeFile();
+            } else {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE);
+            }
+        } else {
+           // writeFile();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (Environment.isExternalStorageManager()) {
+               // writeFile();
+            } else {
+                Toast.makeText(this,"存储权限获取失败",Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
 
     private void initEvent() {
         q1 = binding.sbQ1.getProgress();
@@ -166,12 +216,17 @@ public class Demo2Activity extends AppCompatActivity {
                         binding.tvAvif.setText(avif.length()/1024+"kB, q1="+q1+",q2:"+q2+" cost:"
                                 +(System.currentTimeMillis() - start)+"ms, wh:"+w+"x"+h+"\n"+avif.getAbsolutePath());
                         showAvifBig(avif);
+                        uploadAvif(avif.getAbsolutePath());
 
                     }
                 });
             }
         }).start();
 
+    }
+
+    private void uploadAvif(String absolutePath) {
+        AliOssUtil.upload(absolutePath);
     }
 
     private void showAvifBig(File avif) {
