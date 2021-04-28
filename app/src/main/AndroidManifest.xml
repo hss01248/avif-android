@@ -9,7 +9,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"/>
 
     <application
@@ -24,7 +23,7 @@
         android:theme="@style/AppTheme"
         android:extractNativeLibs = "true">
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -32,6 +31,33 @@
             </intent-filter>
         </activity>
         <activity android:name=".Demo2Activity" />
+
+
+
+        <activity
+            android:exported="true"
+            android:name="com.darsh.multipleimageselect.activities.AlbumSelectActivity"
+            >
+
+            <intent-filter>
+
+                <category
+                    android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+
+            android:name="com.darsh.multipleimageselect.activities.ImageSelectActivity"
+            android:exported="true"
+            >
+
+            <intent-filter>
+
+                <category
+                    android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

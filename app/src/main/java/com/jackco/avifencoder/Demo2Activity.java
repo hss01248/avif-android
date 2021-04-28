@@ -50,6 +50,15 @@ public class Demo2Activity extends AppCompatActivity {
         initEvent();
         requestPermission();
 
+        showTestAvif();
+
+    }
+
+    private void showTestAvif() {
+        ///data/data/com.jackco.avifencoder/files/AVIF test file - Your browser (software) supports AVIF (Quality 25).avif
+        //documentimage_102722_30_03_2021_14_21_24.avif
+        File file = new File(getFilesDir(),"documentimage_102722_30_03_2021_14_21_24.avif");
+        showAvifBig(file);
     }
 
 
@@ -240,6 +249,16 @@ public class Demo2Activity extends AppCompatActivity {
                         binding.ivAvif.setImage(ImageSource.bitmap(resource));
                     }
                 });
+        try {
+            //HeifDecoderImpl: getSize: not supported!
+            //HeifDecoderImpl: decode: videoFrame is a nullptr
+            //skia: --- codec->getAndroidPixels() failed.
+            Bitmap bitmap = BitmapFactory.decodeFile(avif.getAbsolutePath());
+            binding.ivAvif.setImage(ImageSource.bitmap(bitmap));
+        }catch (Throwable throwable){
+            throwable.printStackTrace();
+        }
+
 
     }
 

@@ -46,6 +46,17 @@
             android:layout_height="200dp"/>
         <TextView
             android:padding="2dp"
+            android:text="avif by 系统api"
+            android:id="@+id/tv_avif_sys"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+            android:id="@+id/iv_avif_sys"
+            android:layout_width="match_parent"
+            android:adjustViewBounds="true"
+            android:layout_height="200dp"/>
+        <TextView
+            android:padding="2dp"
             android:text="original"
             android:id="@+id/tv_original"
             android:layout_width="match_parent"
