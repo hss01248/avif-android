@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.davemorrissey.labs.subscaleview.ImageSource;
+import com.hss01248.avif.AvifEncoder;
 import com.jackco.avifencoder.databinding.ActivityDemo2Binding;
 import com.jackco.avifencoder.quality.Magick;
 
@@ -143,14 +144,14 @@ public class Demo2Activity extends AppCompatActivity {
             public void run() {
                 final long start = System.currentTimeMillis();
 
-                String name = new File(path).getName();
+               /* String name = new File(path).getName();
                 name = name.substring(0,name.lastIndexOf("."))+"-q1-"+q1+"-q2-"+q2;
                 name = name+".avif";
                 final File avif = new File(getExternalFilesDir("avif"),name);
 
-                AvifEncoder.encodeFileTo(path,avif.getAbsolutePath(),q1,q2);
+                AvifEncoder.encodeFileTo(path,avif.getAbsolutePath(),q1,q2);*/
 
-
+                final File avif = AvifEncoder.encodeOneFile(path);
 
 
                 runOnUiThread(new Runnable() {
@@ -218,7 +219,9 @@ public class Demo2Activity extends AppCompatActivity {
         name = name.substring(0,name.lastIndexOf("."))+System.currentTimeMillis()+".jpg";
         final File file = new File(getExternalFilesDir("avif"),name);
         try {
-            bitmap.compress(Bitmap.CompressFormat.JPEG,75,new FileOutputStream(file));
+            FileOutputStream os = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.JPEG,75,os);
+            os.close();
             final int quality = new Magick().getJPEGImageQuality(file);
             runOnUiThread(new Runnable() {
                 @Override
