@@ -86,7 +86,7 @@ public class AvifEncoder {
 
             new File(rawPath).delete();
 
-        } catch (IOException e) {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
         return false;
