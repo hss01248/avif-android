@@ -62,7 +62,7 @@ public class AvifEncoder {
 
            boolean success =  encodeFileTo(path,out.getAbsolutePath());
            if(success){
-               Log.i("avif","avif压缩成功:"+path);
+               Log.i("avif","avif压缩成功:"+out);
                return out;
            }
            return file;
