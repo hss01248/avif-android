@@ -19,6 +19,7 @@ import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 
 
 public class AvifEncoder {
@@ -100,11 +101,26 @@ public class AvifEncoder {
 
             if(qua2 > 63) qua2 = 63;
             if(qua1 == 0) qua2 = 0;*/
-            boolean success = execAvifEncoder(rawPath, output, bitmap.getWidth(), bitmap.getHeight(), 8, quality, q2, 10);
+            File outFile = new File(output);
+            File tmp = new File(outFile.getParent(),new Random(Integer.MAX_VALUE).nextInt()+".avif");
+            if(tmp.exists()){
+                tmp.delete();
+            }
+            if(outFile.exists()){
+                outFile.delete();
+            }
+            boolean success = execAvifEncoder(rawPath, tmp.getAbsolutePath(), bitmap.getWidth(), bitmap.getHeight(), 8, quality, q2, 10);
             if (success) {
                 File file = new File(output);
-                if (file.exists() && file.length() > 10) {
-                    return true;
+                if (tmp.exists() && tmp.length() > 10) {
+                    boolean renameTo = tmp.renameTo(outFile);
+                    if(renameTo){
+                        return true;
+                    }else {
+                        //todo copy file
+                        Log.w("avif","rename 失败 "+output);
+                    }
+                    return false;
                 }else {
                     Log.w("avif", "file not exists or lenght is not right:"+file.length()+"B,"+file.exists()+", raw file:"+new File(rawPath).length());
                 }
